@@ -42,9 +42,23 @@ resource "azurerm_network_security_group" "targets" {
     source_address_prefix      = "*"
     destination_address_prefix = "Internet"
   }
+  #Onlly allow my ip in the network
+  security_rule {
+    name                       = "allow-ssh-admin"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefixes    = var.admin_source_ips
+    destination_address_prefix = "*"
+  }
 }
+
 
 resource "azurerm_subnet_network_security_group_association" "targets" {
   subnet_id                 = azurerm_subnet.targets.id
   network_security_group_id = azurerm_network_security_group.targets.id
 }
+
