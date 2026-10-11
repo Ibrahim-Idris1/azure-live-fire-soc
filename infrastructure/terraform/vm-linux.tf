@@ -25,7 +25,8 @@ resource "azurerm_linux_virtual_machine" "linux01" {
   resource_group_name             = azurerm_resource_group.range.name
   size                            = var.vm_size
   admin_username                  = "socadmin"
-  disable_password_authentication = true
+  disable_password_authentication = !var.enable_password_login
+  admin_password                  = var.enable_password_login ? var.admin_password : null
   network_interface_ids           = [azurerm_network_interface.linux01.id]
 
   admin_ssh_key {

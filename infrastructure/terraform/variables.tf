@@ -27,3 +27,24 @@ variable "vm_size" {
   type    = string
   default = "Standard_D2alds_v7"
 }
+
+variable "ssh_open_to_internet" {
+  type    = bool
+  default = false
+}
+
+variable "enable_password_login" {
+  type    = bool
+  default = false
+}
+
+variable "admin_password" {
+  type      = string
+  default   = null
+  sensitive = true
+}
+
+variable "allow_updates_outbound" {
+  type    = bool
+  default = false
+}
