@@ -51,3 +51,18 @@ resource "azurerm_linux_virtual_machine" "linux01" {
     type = "SystemAssigned"
   }
 }
+
+resource "azurerm_virtual_machine_extension" "vulns_linux01" {
+  count                = var.plant_vulnerabilities ? 1 : 0
+  name                 = "PlantVulnerabilities"
+  virtual_machine_id   = azurerm_linux_virtual_machine.linux01.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  protected_settings = jsonencode({
+    script = base64encode(file("${path.module}/../vulnerabilities/linux/plant-vulns.sh"))
+  })
+
+  depends_on = [azurerm_virtual_machine_extension.ama_linux01]
+}

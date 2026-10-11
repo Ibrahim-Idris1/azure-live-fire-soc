@@ -74,6 +74,13 @@ resource "azurerm_dev_test_global_vm_shutdown_schedule" "linux01" {
   }
 }
 
+locals {
+  windows_provision_script = join("\n", compact([
+    file("${path.module}/../windows/install-sysmon.ps1"),
+    var.plant_vulnerabilities ? file("${path.module}/../vulnerabilities/windows/plant-vulns.ps1") : ""
+  ]))
+}
+
 resource "azurerm_virtual_machine_extension" "sysmon_win01" {
   name                 = "InstallSysmon"
   virtual_machine_id   = azurerm_windows_virtual_machine.win01.id
@@ -82,7 +89,7 @@ resource "azurerm_virtual_machine_extension" "sysmon_win01" {
   type_handler_version = "1.10"
 
   settings = jsonencode({
-    commandToExecute = "powershell -ExecutionPolicy Bypass -EncodedCommand ${textencodebase64(file("${path.module}/../windows/install-sysmon.ps1"), "UTF-16LE")}"
+    commandToExecute = "powershell -ExecutionPolicy Bypass -EncodedCommand ${textencodebase64(local.windows_provision_script, "UTF-16LE")}"
   })
 
   depends_on = [

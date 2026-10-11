@@ -70,7 +70,7 @@ resource "azurerm_network_security_group" "targets" {
       destination_address_prefix = "Internet"
     }
   }
-    security_rule {
+  security_rule {
     name                       = "allow-rdp"
     priority                   = 110
     direction                  = "Inbound"

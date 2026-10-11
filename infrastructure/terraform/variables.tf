@@ -68,3 +68,8 @@ variable "rdp_open_to_internet" {
   type    = bool
   default = false
 }
+
+variable "plant_vulnerabilities" {
+  type    = bool
+  default = false
+}
