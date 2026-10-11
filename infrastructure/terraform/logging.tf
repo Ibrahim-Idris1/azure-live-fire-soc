@@ -43,7 +43,7 @@ resource "azurerm_monitor_data_collection_rule" "linux_syslog" {
     syslog {
       name           = "syslog-all"
       streams        = ["Microsoft-Syslog"]
-      facility_names = ["auth", "authpriv", "cron", "daemon", "kern", "syslog", "user"]
+      facility_names = ["auth", "authpriv", "cron", "daemon", "kern", "syslog", "user", "local6"]
       log_levels     = ["Debug", "Info", "Notice", "Warning", "Error", "Critical", "Alert", "Emergency"]
     }
   }

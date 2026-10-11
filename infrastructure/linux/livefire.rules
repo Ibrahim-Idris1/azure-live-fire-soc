@@ -1,0 +1,40 @@
+## Reset and settings
+-D
+-b 8192
+-f 1
+
+## Process execution (the most valuable rule)
+-a always,exit -F arch=b64 -S execve -k exec
+-a always,exit -F arch=b32 -S execve -k exec
+
+## Account and privilege changes
+-w /etc/passwd -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/group -p wa -k identity
+-w /etc/gshadow -p wa -k identity
+-w /etc/sudoers -p wa -k sudoers
+-w /etc/sudoers.d/ -p wa -k sudoers
+
+## SSH configuration and keys
+-w /etc/ssh/sshd_config -p wa -k sshd_config
+-w /root/.ssh/ -p wa -k ssh_keys
+-w /home/socadmin/.ssh/ -p wa -k ssh_keys
+
+## Persistence
+-w /etc/crontab -p wa -k persistence
+-w /etc/cron.d/ -p wa -k persistence
+-w /etc/cron.daily/ -p wa -k persistence
+-w /var/spool/cron/ -p wa -k persistence
+-w /etc/systemd/system/ -p wa -k persistence
+-w /etc/rc.local -p wa -k persistence
+-w /etc/ld.so.preload -p wa -k preload
+
+## Kernel modules and debugging
+-a always,exit -F arch=b64 -S init_module -S finit_module -S delete_module -k modules
+-a always,exit -F arch=b64 -S ptrace -k tracing
+
+## Download and network tools being run
+-w /usr/bin/wget -p x -k susp_tools
+-w /usr/bin/curl -p x -k susp_tools
+-w /usr/bin/nc -p x -k susp_tools
+-w /usr/bin/ncat -p x -k susp_tools
