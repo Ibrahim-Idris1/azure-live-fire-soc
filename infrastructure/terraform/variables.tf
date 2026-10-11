@@ -48,3 +48,23 @@ variable "allow_updates_outbound" {
   type    = bool
   default = false
 }
+
+variable "windows_vm_size" {
+  type    = string
+  default = "Standard_D2alds_v7"
+}
+
+variable "windows_admin_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "auto_shutdown_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "rdp_open_to_internet" {
+  type    = bool
+  default = false
+}

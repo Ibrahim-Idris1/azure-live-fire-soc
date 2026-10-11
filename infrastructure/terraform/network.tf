@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "targets" {
     destination_address_prefix = "Internet"
   }
   #Onlly allow my ip in the network
-    security_rule {
+  security_rule {
     name                       = "allow-ssh"
     priority                   = 100
     direction                  = "Inbound"
@@ -56,7 +56,7 @@ resource "azurerm_network_security_group" "targets" {
     destination_address_prefix = "*"
   }
   #Allow Updates 
-    dynamic "security_rule" {
+  dynamic "security_rule" {
     for_each = var.allow_updates_outbound ? [1] : []
     content {
       name                       = "allow-web-out-temp"
@@ -70,8 +70,20 @@ resource "azurerm_network_security_group" "targets" {
       destination_address_prefix = "Internet"
     }
   }
+    security_rule {
+    name                       = "allow-rdp"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = var.rdp_open_to_internet ? "*" : null
+    source_address_prefixes    = var.rdp_open_to_internet ? null : var.admin_source_ips
+    destination_address_prefix = "*"
+  }
 
-  
+
 }
 
 
