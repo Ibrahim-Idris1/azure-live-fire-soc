@@ -1,0 +1,45 @@
+name: Deploy Detections to Sentinel
+
+on:
+  pull_request:
+    paths:
+      - 'detections/**'
+  push:
+    branches: [main]
+    paths:
+      - 'detections/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infrastructure/terraform
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: infrastructure/terraform
+
+      - name: Terraform Plan
+        run: terraform plan -no-color
+        working-directory: infrastructure/terraform
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
+        working-directory: infrastructure/terraform
