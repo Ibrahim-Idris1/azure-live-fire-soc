@@ -19,15 +19,4 @@ resource "azurerm_sentinel_alert_rule_scheduled" "ssh_bruteforce" {
   trigger_operator  = "GreaterThan"
   trigger_threshold = 0
   tactics           = ["CredentialAccess"]
-
-  incident_configuration {
-    create_incident_enabled = true
-    grouping {
-      enabled                 = true
-      lookback_duration       = "PT5H"
-      reopen_closed_incidents = false
-      entity_matching_method  = "Selected"
-      group_by_entities       = ["Host"]
-    }
-  }
 }
