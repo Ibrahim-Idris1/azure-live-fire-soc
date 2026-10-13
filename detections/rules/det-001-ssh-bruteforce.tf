@@ -21,4 +21,3 @@ resource "azurerm_sentinel_alert_rule_scheduled" "ssh_bruteforce" {
   tactics           = ["CredentialAccess"]
 }
 
-# Pipeline test
