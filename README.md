@@ -14,12 +14,12 @@ The goal: demonstrate the full SOC lifecycle the way it actually happens on a re
 
 ## Team
 
-| Role | Responsibility |
-|---|---|
-| Lead SOC Analyst | Infrastructure design, Terraform deployment, SOC workflow, detection engineering, reporting |
-| Student Analyst | EDR deployment, endpoint validation, live monitoring, threat hunting, detection tuning |
+| Name | Role | Profile |
+|---|---|---|
+| [Your Name] | Lead SOC Analyst — infrastructure, detection engineering, pipeline | [LinkedIn/GitHub link] |
+| [Student Name] | SOC Analyst — detection validation, EDR deployment, live monitoring | [LinkedIn/GitHub link] |
 
-Attackers are vetted members of the community, operating under a signed Rules of Engagement. Their activity is fully logged and analyzed; their identities are not published anywhere in this repository or report.
+Attackers were vetted members of our security community, operating under a signed Rules of Engagement. Their activity is fully logged and analyzed; their identities are not published anywhere in this repository or report.
 
 ---
 
@@ -91,25 +91,18 @@ Attackers are vetted members of the community, operating under a signed Rules of
 ## Repository structure
 
 ```
-├── docs/                         Documentation: architecture, setup, RoE, playbook
+├── docs/                   Rules of engagement, architecture notes, setup guide
 ├── infrastructure/
-│   ├── terraform/               Network, VMs, logging pipeline, automation schedules
-│   └── vulnerabilities/          Documented, intentionally planted weaknesses
+│   ├── terraform/            Network, VMs, logging pipeline, automation schedules
+│   └── vulnerabilities/      Documented, intentionally planted weaknesses
 ├── detections/
-│   ├── rules/                    Sentinel detection rules (Terraform, KQL)
-│   └── tests/                    Atomic Red Team validation mappings
-├── hunts/                        Threat hunt logs and investigations
-├── incidents/                    Incident timeline and response notes
-├── dashboards/                   Sentinel Workbook exports and screenshots
-├── reports/                      After-action report and metrics
-├── .github/workflows/            CI/CD pipeline for detection-as-code deployment
-├── README.md                     Project overview and main entry point
-├── docs/quick-start.md           Fast-start guide for the team
-├── docs/setup-guide.md           Deploy the range in Azure
-├── docs/rules-of-engagement.md   Participant access and project boundaries
-├── docs/architecture.md          Architecture and telemetry flow
-├── docs/soc-operational-playbook.md  SOC hunting and response workflow
-└── docs/roles-and-responsibilities.md Team roles
+│   ├── rules/                 Sentinel detection rules (Terraform, KQL)
+│   └── tests/                 Atomic Red Team validation mappings
+├── hunts/                   Threat hunt logs
+├── incidents/                Incident timeline and response notes
+├── dashboards/               Sentinel Workbook exports and screenshots
+├── reports/                  After-action report and metrics
+└── .github/workflows/        CI/CD pipeline for detection-as-code deployment
 ```
 
 ---
