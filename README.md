@@ -16,8 +16,8 @@ The goal: demonstrate the full SOC lifecycle the way it actually happens on a re
 
 | Name | Role | Profile |
 |---|---|---|
-| [Your Name] | Lead SOC Analyst — infrastructure, detection engineering, pipeline | [LinkedIn/GitHub link] |
-| [Student Name] | SOC Analyst — detection validation, EDR deployment, live monitoring | [LinkedIn/GitHub link] |
+| Ibrahim Idris | Lead SOC Analyst — infrastructure, detection engineering, pipeline | TODO: LinkedIn/GitHub link |
+| TODO: Student Name | SOC Analyst — detection validation, EDR deployment, live monitoring | TODO: LinkedIn/GitHub link |
 
 Attackers were vetted members of our security community, operating under a signed Rules of Engagement. Their activity is fully logged and analyzed; their identities are not published anywhere in this repository or report.
 
@@ -143,4 +143,4 @@ Full breakdown in [`/reports/after-action-report.md`](reports/after-action-repor
 
 ## License
 
-[Choose a license, e.g. MIT — add LICENSE file]
+TODO: Select and document the project license. See [LICENSE](LICENSE).
