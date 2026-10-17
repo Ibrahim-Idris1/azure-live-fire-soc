@@ -20,3 +20,4 @@ resource "azurerm_sentinel_alert_rule_scheduled" "ssh_bruteforce" {
   trigger_threshold = 0
   tactics           = ["CredentialAccess"]
 }
+
