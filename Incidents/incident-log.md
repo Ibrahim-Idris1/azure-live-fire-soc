@@ -1,0 +1,1 @@
+| IR-001 | 2026-10-15 | DET-005 | Medium | Benign true positive — confirmed as student's det-005 validation test (sc.exe create testsvc) | |

@@ -51,8 +51,8 @@ resource "azurerm_automation_schedule" "morning_start" {
 resource "azurerm_automation_job_schedule" "start_vms_schedule" {
   resource_group_name     = azurerm_resource_group.range.name
   automation_account_name = azurerm_automation_account.range.name
-  schedule_name            = azurerm_automation_schedule.morning_start.name
-  runbook_name             = azurerm_automation_runbook.start_vms.name
+  schedule_name           = azurerm_automation_schedule.morning_start.name
+  runbook_name            = azurerm_automation_runbook.start_vms.name
 
   lifecycle {
     ignore_changes = [schedule_name]
