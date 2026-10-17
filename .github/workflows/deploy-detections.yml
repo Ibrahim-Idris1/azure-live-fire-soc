@@ -15,6 +15,11 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    env:
+      TF_VAR_admin_source_ips: ${{ secrets.TF_VAR_admin_source_ips }}
+      TF_VAR_admin_ssh_public_key: ${{ secrets.TF_VAR_admin_ssh_public_key }}
+      TF_VAR_windows_admin_password: ${{ secrets.TF_VAR_windows_admin_password }}
+      TF_VAR_admin_password: ${{ secrets.TF_VAR_admin_password }}
     steps:
       - uses: actions/checkout@v4
 
