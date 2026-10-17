@@ -1,134 +1,68 @@
 # Architecture Overview
 
-This range is designed to behave like a small but realistic Azure-based SOC exercise. It gives the team a safe, reproducible environment to:
-
-- deploy intentionally vulnerable endpoints,
-- collect realistic telemetry,
-- validate detections,
-- hunt for attacker behavior, and
-- document the incident lifecycle in a portfolio-ready way.
+This range is a small Azure-based SOC exercise built from Terraform. It provisions two endpoints, can optionally plant intentionally vulnerable configurations, sends endpoint logs to Log Analytics and Microsoft Sentinel, and deploys the Sentinel detections defined in this repository.
 
 ## High-Level Design
 
 ```text
-                         ┌──────────────────────────────┐
-                         │ Community Attackers          │
-                         │ vetted participants           │
-                         │ operating under signed RoE    │
-                         └──────────────┬───────────────┘
-                                        │
-                                        │ attack traffic
-                                        ▼
-                     ┌────────────────────────────────────┐
-                     │ Azure Resource Group               │
-                     │ Virtual Network + NSGs             │
-                     │                                    │
-                     │ ┌──────────────┐     ┌────────────┐ │
-                     │ │ vm-linux-01 │     │ vm-win-01  │ │
-                     │ │ Ubuntu       │     │ Windows    │ │
-                     │ │ auditd       │     │ Sysmon     │ │
-                     │ │ Linux logs   │     │ Windows EVTX│ │
-                     │ └──────┬───────┘     └──────┬─────┘ │
-                     └─────────┼────────────────────┼─────┘
-                               │                    │
-                               │ telemetry          │ telemetry
-                               ▼                    ▼
-             ┌────────────────────────────────────────────────────┐
-             │ Log Analytics Workspace                             │
-             │ + Microsoft Sentinel + Security analytics rules      │
-             └──────────────────────┬─────────────────────────────┘
-                                    │
-                                    │ alerting / hunting / investigations
-                                    ▼
-                   ┌────────────────────────────────────────────┐
-                   │ SOC Team / Analysts                         │
-                   │ - hunt                                       │
-                   │ - validate detections                       │
-                   │ - investigate alerts                        │
-                   │ - generate reports                          │
-                   └────────────────────────────────────────────┘
+Community attackers
+        |
+        v
+Azure resource group
+  Virtual network 10.10.0.0/16
+  Subnet 10.10.1.0/24
+  NSG
+   |                         |
+   v                         v
+vm-linux-01                vm-win-01
+Ubuntu Server 22.04        Windows Server 2022
+DVWA, Samba, audit rules   Sysmon, Windows events
+   |                         |
+   +------------+------------+
+                v
+     Azure Monitor agents
+                |
+                v
+Log Analytics Workspace + Microsoft Sentinel
+                |
+                v
+       SOC detection and response
 ```
 
 ## Components
 
 ### 1. Azure infrastructure
-The range is created from code using Terraform. It contains:
 
-- one resource group
-- one virtual network and subnet
-- one Linux VM and one Windows VM
-- network security groups with restricted outbound access
-- Azure Monitor / Log Analytics connectivity
-- optional auto-shutdown schedules for cost control
+Terraform creates a resource group, a virtual network and target subnet, a network security group, and Linux and Windows virtual machines with public IP addresses. SSH and RDP are limited to configured administrator source IPs by default; their respective `ssh_open_to_internet` and `rdp_open_to_internet` variables can widen access. Inbound HTTP on port 80 is allowed from any source. Outbound Azure Monitor HTTPS is allowed, while other internet egress is denied unless `allow_updates_outbound` is enabled.
 
-### 2. Intentionally vulnerable endpoints
-The vulnerable machines are deliberately configured with insecure services, weak authentication paths, or misconfigured persistence behavior so the range creates realistic, high-value telemetry.
+The Linux VM uses Ubuntu Server 22.04 and the Windows VM uses Windows Server 2022. Vulnerability provisioning is controlled by `plant_vulnerabilities`; it is disabled by default. Terraform also defines daily VM start automation and optional 23:00 auto-shutdown schedules.
 
-Examples include:
+### 2. Linux attack surface
 
-- SSH or RDP brute force paths
-- weak local account creation conditions
-- cron persistence on Linux
-- Windows service persistence or startup activity
-- intentionally insecure scripts used for training
+When vulnerability planting is enabled, the Linux provisioning script creates a weak-password `backupuser`, a world-writable root cron script, the DVWA web application backed by MariaDB, and an anonymous writable Samba share at `/srv/samba/public`. Audit rules watch the cron artifacts, DVWA files, and Samba share.
 
-### 3. Logging and telemetry
-The event pipeline is designed to collect the information needed for detection and investigation.
+The NSG currently allows inbound HTTP but does not add an inbound SMB rule for TCP port 445. The Samba share is configured on the endpoint, but remote SMB access requires a permitted network path; do not expose SMB broadly to the internet.
 
-Core log sources:
+### 3. Windows attack surface
 
-- Syslog / auditd on Linux
-- Windows Security Event Log
-- Sysmon telemetry on Windows
-- PowerShell logs and command execution logging
-- Azure Monitor / NSG / Activity logs
+The Windows provisioning script installs Sysmon and, when vulnerability planting is enabled, creates the `svc_backup` account and a vulnerable service path under `C:\VulnApp`.
 
-### 4. EDR
-EDR telemetry provides additional endpoint visibility and incident context. The project uses the EDR layer to complement Azure-native logs and threat hunting activities.
+### 4. Logging and telemetry
 
-### 5. Microsoft Sentinel
-Sentinel is the central SIEM component for:
+Azure Monitor agents and data collection rules send Linux Syslog and Windows Security/Event data to the Log Analytics workspace. The Linux collection rule includes the configured facilities and log levels; auditd activity is available through this path when emitted as Syslog. Microsoft Sentinel is onboarded to the workspace.
 
-- scheduled detection rules,
-- alert triage,
-- hunting queries,
-- incident tracking,
-- timeline analysis,
-- dashboarding.
+The Terraform in this repository does not install the Linux auditd package or configure LimaCharlie. The Linux provisioning script adds audit rules and loads them, while any LimaCharlie agent and tenant configuration must be managed separately.
 
-### 6. GitHub and detection as code
-This repository is the source of truth for all things that define the range:
+### 5. Detection as code
 
-- infrastructure code,
-- detection rules,
-- governance notes,
-- operational logs,
-- findings and report artifacts.
-
-All detection logic is tracked and versioned in GitHub and deployed through a GitHub Actions workflow.
-
-## Design Goals
-
-This project is intentionally designed to teach the real SOC workflow:
-
-1. Build the environment.
-2. Validate the logging pipeline.
-3. Simulate or receive attacks.
-4. Tune detections.
-5. Hunt for adversary behavior.
-6. Review missed opportunities and false positives.
-7. Write the final report.
+The Terraform module under `detections/rules` defines the Sentinel scheduled analytics rules. GitHub Actions deploys the rules using the repository's configured Azure authentication. The current rule files include DET-001, DET-002, and DET-004 through DET-006.
 
 ## Security Model
 
-To reduce risk and maintain safe operations:
+- Keep the range in a dedicated resource group and restrict administrator access to approved source IPs.
+- Outbound internet access is denied by default, apart from Azure Monitor; update access is an explicit option.
+- HTTP is exposed by the current NSG. SMB is not opened inbound by the current NSG.
+- Treat the planted vulnerabilities as training-only and never use production credentials or sensitive data in the range.
+- Run participant activity only under a written Rules of Engagement.
 
-- all outbound internet access is tightly restricted by default,
-- only approved admin sources are allowed in,
-- all activity is contained in a dedicated Azure resource group,
-- no production credentials or secrets are stored in the repo,
-- the project is intentionally isolated from anything unrelated to the lab.
-
-## Operational Note
-
-This range is for training and research within an agreed scope. It is not a production environment and should never be connected to sensitive data, real credentials, or live business systems.
+This environment is intentionally insecure and is not suitable for production workloads.

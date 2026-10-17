@@ -1,14 +1,14 @@
 # Live-Fire SOC Range
 
-**A live-fire Security Operations Center exercise built on Azure** — intentionally vulnerable endpoints, real community attackers, and a two-analyst blue team detecting, hunting, and responding in real time. Every piece of the range — infrastructure, detections, and the pipeline that deploys them — is built and versioned as code.
+**A live-fire Security Operations Center exercise built on Azure** intentionally vulnerable endpoints, real community attackers, and a two-analyst blue team detecting, hunting, and responding in real time. Every piece of the range infrastructure, detections, and the pipeline that deploys them is built and versioned as code.
 
 ---
 
 ## Overview
 
-Most SOC portfolio projects use canned datasets or simulated attacks. This one doesn't. We deployed real vulnerable systems in Azure, invited vetted community members to attack them under a signed Rules of Engagement, and ran a live two-person SOC — threat hunting, writing detections, and responding — against genuinely unpredictable traffic.
+Most SOC portfolio projects use canned datasets or simulated attacks. This one doesn't. We deployed real vulnerable systems in Azure, invited vetted community members to attack them under a signed Rules of Engagement, and ran a live two-person SOC threat hunting, writing detections, and responding against genuinely unpredictable traffic.
 
-The goal: demonstrate the full SOC lifecycle the way it actually happens on a real team — infrastructure as code, detection as code, live triage, and a documented after-action report — not a lab exercise with a known answer key.
+The goal: demonstrate the full SOC lifecycle the way it actually happens on a real team infrastructure as code, detection as code, live triage, and a documented after-action report not a lab exercise with a known answer key.
 
 ---
 
@@ -16,8 +16,8 @@ The goal: demonstrate the full SOC lifecycle the way it actually happens on a re
 
 | Name | Role | Profile |
 |---|---|---|
-| [Your Name] | Lead SOC Analyst — infrastructure, detection engineering, pipeline | [LinkedIn/GitHub link] |
-| [Student Name] | SOC Analyst — detection validation, EDR deployment, live monitoring | [LinkedIn/GitHub link] |
+| Ibrahim Idris | Lead SOC Analyst infrastructure, detection engineering, pipeline | LinkedIn: https://www.linkedin.com/in/ibrahim-idris-b5712a371 Github: https://github.com/Ibrahim-Idris1/Ibrahim-Idris1 |
+| Tosin Aribisala | SOC Analyst detection validation, EDR deployment, live monitoring | Linkedin: https://www.linkedin.com/in/tosin-aribisala-0956101a1/ Github: https://github.com/ARIBISALAT |
 
 Attackers were vetted members of our security community, operating under a signed Rules of Engagement. Their activity is fully logged and analyzed; their identities are not published anywhere in this repository or report.
 
@@ -139,8 +139,3 @@ Full breakdown in [`/reports/after-action-report.md`](reports/after-action-repor
 - No participant names, IPs, or identifying information are published anywhere in this repository.
 - All planted vulnerabilities and configurations described here are intentionally insecure for training purposes only and must never be deployed in a production environment.
 
----
-
-## License
-
-[Choose a license, e.g. MIT — add LICENSE file]

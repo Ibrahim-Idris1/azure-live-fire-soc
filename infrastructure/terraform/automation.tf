@@ -9,8 +9,6 @@ resource "azurerm_automation_account" "range" {
   }
 }
 
-# Give the Automation Account's identity permission to start/stop VMs,
-# scoped only to this resource group — nothing else.
 resource "azurerm_role_assignment" "automation_vm_contributor" {
   scope                = azurerm_resource_group.range.id
   role_definition_name = "Virtual Machine Contributor"
@@ -60,4 +58,3 @@ resource "azurerm_automation_job_schedule" "start_vms_schedule" {
     ignore_changes = [schedule_name]
   }
 }
-

@@ -37,7 +37,7 @@ location = "eastus"
 prefix = "livefire-soc"
 admin_source_ips = ["203.0.113.5/32"]
 admin_ssh_public_key = "ssh-rsa AAAAB3Nza..."
-windows_admin_password = "StrongPassword123!"
+windows_admin_password = "<secure-password>"
 ssh_open_to_internet = false
 rdp_open_to_internet = false
 allow_updates_outbound = false
@@ -74,6 +74,12 @@ The infrastructure includes:
 - monitoring, logging, and SIEM components
 - optional vulnerable configuration scripts
 
+## Stand Up DVWA and the Samba Share
+
+1. Set `plant_vulnerabilities = true` in `terraform.tfvars` and apply the Terraform configuration. The Linux VM extension runs `infrastructure/vulnerabilities/linux/plant-vulns.sh`, which installs DVWA with Apache and MariaDB and configures an anonymous, writable Samba share at `/srv/samba/public`.
+2. Verify the DVWA web service from an allowed client with `curl -I http://<linux-public-ip>/DVWA/`. The NSG allows inbound HTTP on port 80.
+3. Verify the Samba configuration on the Linux VM with `sudo testparm -s`. The current NSG does not allow inbound SMB on TCP port 445, so remote enumeration requires a private or otherwise explicitly permitted test path. Do not expose SMB broadly to the internet.
+
 ## Validate the Environment
 
 Once Terraform completes, verify the following:
@@ -92,7 +98,7 @@ Recommended controls:
 
 - keep the entire range in a dedicated Azure resource group,
 - lock outbound access down by default,
-- do not attach production credentials or managed identities,
+- do not use production credentials or grant production access through managed identities,
 - anonymize or remove real IP addresses from public documentation,
 - pair every exercise with a written Rules of Engagement,
 - destroy the environment after the event window ends.

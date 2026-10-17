@@ -44,6 +44,10 @@ resource "azurerm_windows_virtual_machine" "win01" {
   identity {
     type = "SystemAssigned"
   }
+
+  lifecycle {
+    ignore_changes = [admin_password]
+  }
 }
 
 output "win01_public_ip" {

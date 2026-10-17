@@ -50,6 +50,10 @@ resource "azurerm_linux_virtual_machine" "linux01" {
   identity {
     type = "SystemAssigned"
   }
+
+  lifecycle {
+    ignore_changes = [admin_password]
+  }
 }
 
 resource "azurerm_virtual_machine_extension" "vulns_linux01" {
