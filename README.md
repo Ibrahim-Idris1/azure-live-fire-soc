@@ -16,8 +16,8 @@ The goal: demonstrate the full SOC lifecycle the way it actually happens on a re
 
 | Name | Role | Profile |
 |---|---|---|
-| Ibrahim Idris | Lead SOC Analyst — infrastructure, detection engineering, pipeline | TODO: LinkedIn: linkedin.com/in/ibrahim-idris-b5712a371 Github: https://github.com/Ibrahim-Idris1/Ibrahim-Idris1 |
-| Tosin Aribisala | SOC Analyst — detection validation, EDR deployment, live monitoring | Linkedin: linkedin.com/in/tosin-aribisala-0956101a1 Github: https://github.com/ARIBISALAT |
+| Ibrahim Idris | Lead SOC Analyst infrastructure, detection engineering, pipeline | LinkedIn: https://www.linkedin.com/in/ibrahim-idris-b5712a371 Github: https://github.com/Ibrahim-Idris1/Ibrahim-Idris1 |
+| Tosin Aribisala | SOC Analyst detection validation, EDR deployment, live monitoring | Linkedin: https://www.linkedin.com/in/tosin-aribisala-0956101a1/ Github: https://github.com/ARIBISALAT |
 
 Attackers were vetted members of our security community, operating under a signed Rules of Engagement. Their activity is fully logged and analyzed; their identities are not published anywhere in this repository or report.
 
