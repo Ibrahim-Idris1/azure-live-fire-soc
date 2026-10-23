@@ -7,4 +7,6 @@
 | DET-004 | New Local User | Medium | SecurityEvent, Syslog (auditd) | T1136 | Persistence / Privilege Escalation | Tested, firing |
 | DET-005 | New Service Installed | Medium | Event | T1543.003 | Persistence / Privilege Escalation | Tested, firing |
 | DET-006 | Cron Persistence | Medium | Syslog (auditd) | T1053.003 | Persistence | Tested, firing |
-| DET-007 | Possible Web Shell — Apache Spawning Shell | High | Syslog (auditd) | T1505.003 | Initial Access / Execution | deployed, pending validation |
+| DET-007 | Possible Web Shell — Apache Spawning Shell | High | Syslog (auditd) | T1505.003 | Initial Access / Execution | deployed; did not trigger during the October 12-23, 2026 event |
+
+During the event, the team reported that the other five listed analytics rules triggered. Triggered alerts still require individual triage before being classified as true positives.

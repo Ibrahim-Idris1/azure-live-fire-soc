@@ -109,14 +109,12 @@ Attackers were vetted members of our security community, operating under a signe
 
 ## Key results
 
-*(To be completed after the live event)*
+- Exercise window: October 12-23, 2026
+- Sentinel overview: 769 new incidents in the selected 14-day view; 770 open and 1 active at capture time
+- Analytics rules reported as triggered: 5 of 6; the web-shell rule did not trigger
+- Confirmed true positives, false positives, and mean time to detect: pending alert triage
 
-- Total attack attempts observed:
-- Incidents detected:
-- Detection rules deployed:
-- Mean time to detect:
-- Notable techniques caught:
-- Notable gaps found and addressed:
+Sentinel incident counts are not equivalent to unique attacks or confirmed compromises. See [`/reports/after-action-report.md`](reports/after-action-report.md) for the event summary and remaining analysis.
 
 Full breakdown in [`/reports/after-action-report.md`](reports/after-action-report.md).
 
