@@ -35,17 +35,19 @@ Log Analytics Workspace + Microsoft Sentinel
 
 Terraform creates a resource group, a virtual network and target subnet, a network security group, and Linux and Windows virtual machines with public IP addresses. SSH and RDP are limited to configured administrator source IPs by default; their respective `ssh_open_to_internet` and `rdp_open_to_internet` variables can widen access. Inbound HTTP on port 80 is allowed from any source. Outbound Azure Monitor HTTPS is allowed, while other internet egress is denied unless `allow_updates_outbound` is enabled.
 
+The [resource-group overview](../screenshots/infrastructure/resource-group-resources-overview.png), [upper inventory](../screenshots/infrastructure/resource-group-resources-upper.png), and [lower inventory](../screenshots/infrastructure/resource-group-resources-lower.png) Azure portal screenshots show the group and portions of its resources at capture time. They are illustrative snapshots, not a live or complete inventory.
+
 The Linux VM uses Ubuntu Server 22.04 and the Windows VM uses Windows Server 2022. Vulnerability provisioning is controlled by `plant_vulnerabilities`; it is disabled by default. Terraform also defines daily VM start automation and optional 23:00 auto-shutdown schedules.
 
 ### 2. Linux attack surface
 
-When vulnerability planting is enabled, the Linux provisioning script creates a weak-password `backupuser`, a world-writable root cron script, the DVWA web application backed by MariaDB, and an anonymous writable Samba share at `/srv/samba/public`. Audit rules watch the cron artifacts, DVWA files, and Samba share.
+When vulnerability planting is enabled, the Linux provisioning script creates a `backupuser` account with a generated password, a world-writable root cron script, the DVWA web application backed by MariaDB with a generated database password, and an anonymous writable Samba share at `/srv/samba/public`. Audit rules watch the cron artifacts, DVWA files, and Samba share.
 
 The NSG currently allows inbound HTTP but does not add an inbound SMB rule for TCP port 445. The Samba share is configured on the endpoint, but remote SMB access requires a permitted network path; do not expose SMB broadly to the internet.
 
 ### 3. Windows attack surface
 
-The Windows provisioning script installs Sysmon and, when vulnerability planting is enabled, creates the `svc_backup` account and a vulnerable service path under `C:\VulnApp`.
+The Windows provisioning script installs Sysmon and, when vulnerability planting is enabled, creates or resets the `svc_backup` account with a generated password and configures a vulnerable service path under `C:\VulnApp`.
 
 ### 4. Logging and telemetry
 
@@ -55,7 +57,7 @@ The Terraform in this repository does not install the Linux auditd package or co
 
 ### 5. Detection as code
 
-The Terraform module under `detections/rules` defines the Sentinel scheduled analytics rules. GitHub Actions deploys the rules using the repository's configured Azure authentication. The current rule files include DET-001, DET-002, and DET-004 through DET-006.
+The Terraform module under `detections/rules` defines the Sentinel scheduled analytics rules. GitHub Actions checks Terraform formatting and validates the configuration without Azure credentials; it does not plan or apply changes. Deployments must be reviewed and run separately by an authorized operator. The current rule files include DET-001, DET-002, and DET-004 through DET-006.
 
 ## Security Model
 

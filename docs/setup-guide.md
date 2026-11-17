@@ -27,34 +27,32 @@ az account set --subscription "<your-subscription-id>"
 
 ## Configure Variables
 
-From the Terraform folder, create a `terraform.tfvars` file and populate required values.
+From the Terraform folder, copy the example and replace every placeholder:
 
-Example:
-
-```hcl
-subscription_id = "<azure-subscription-id>"
-location = "eastus"
-prefix = "livefire-soc"
-admin_source_ips = ["203.0.113.5/32"]
-admin_ssh_public_key = "ssh-rsa AAAAB3Nza..."
-windows_admin_password = "<secure-password>"
-ssh_open_to_internet = false
-rdp_open_to_internet = false
-allow_updates_outbound = false
-plant_vulnerabilities = true
+```bash
+cp terraform.tfvars.example terraform.tfvars
 ```
 
-> Never commit real secrets to GitHub. Prefer environment variables or a local secret file that is excluded from version control.
+On Windows PowerShell, use `Copy-Item terraform.tfvars.example terraform.tfvars`.
+
+The example uses documentation-only placeholders and keeps `plant_vulnerabilities` disabled. Set a real Azure subscription ID, your current administrator CIDR, an SSH public key, and a unique Windows administrator password in your local file before planning. The file is ignored by Git; do not commit real credentials or state.
+
+The default network policy blocks general internet egress. Windows VM provisioning downloads Sysmon, and enabling vulnerability planting also requires Linux package and DVWA downloads. For the initial apply, set `allow_updates_outbound = true`; after the VM extensions and any optional vulnerability setup finish, set it back to `false` and apply again to restore the default egress restriction.
+
+> **Lab safety:** Enabling `plant_vulnerabilities` creates intentionally insecure services and permissions. Account and database credentials are generated at provisioning time and are not shared fixed passwords. The current network configuration allows inbound HTTP from any source, so do not enable vulnerable web services on a publicly reachable deployment. Restrict network access and use a dedicated, authorized lab subscription.
 
 ## Terraform Workflow
 
 Run these commands from the Terraform directory:
 
 ```bash
+terraform fmt -check -recursive
 terraform init
 terraform plan
 terraform apply
 ```
+
+Review the plan before applying. GitHub Actions runs formatting and configuration validation only; it does not authenticate to Azure, plan, or apply infrastructure.
 
 When the environment is no longer needed:
 

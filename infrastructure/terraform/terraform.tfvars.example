@@ -1,0 +1,15 @@
+# Copy this file to terraform.tfvars and replace every placeholder before use.
+# This example intentionally leaves vulnerability planting disabled.
+subscription_id        = "00000000-0000-0000-0000-000000000000"
+location               = "eastus"
+prefix                 = "livefire-soc"
+admin_source_ips       = ["203.0.113.1/32"]
+admin_ssh_public_key   = "ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY"
+windows_admin_password = "REPLACE_WITH_A_UNIQUE_PASSWORD"
+admin_password         = null
+enable_password_login  = false
+ssh_open_to_internet   = false
+rdp_open_to_internet   = false
+# Enable for initial VM/Sysmon downloads; disable and reapply after provisioning.
+allow_updates_outbound = false
+plant_vulnerabilities  = false

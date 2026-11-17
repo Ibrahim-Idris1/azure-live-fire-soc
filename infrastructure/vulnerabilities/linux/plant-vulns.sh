@@ -9,11 +9,13 @@ while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
   sleep 5
 done
 
-# --- Vuln 1: weak-password low-priv account ---
+# --- Lab account with a unique, unshared password ---
 id backupuser &>/dev/null || useradd -m -s /bin/bash backupuser
-echo "backupuser:Summer2024!" | chpasswd
+backupuser_password="$(openssl rand -hex 32)"
+printf 'backupuser:%s\n' "$backupuser_password" | chpasswd
+unset backupuser_password
 
-# --- Vuln 2: world-writable root cron job ---
+# --- Vuln 1: world-writable root cron job ---
 mkdir -p /opt/scripts
 cat > /opt/scripts/cleanup.sh << 'SCRIPT'
 #!/bin/bash
@@ -23,29 +25,34 @@ chmod 777 /opt/scripts/cleanup.sh
 echo "* * * * * root /opt/scripts/cleanup.sh" > /etc/cron.d/cleanup
 chmod 644 /etc/cron.d/cleanup
 
-# --- Vuln 3: DVWA web application ---
+# --- Vuln 2: DVWA web application ---
 apt-get update -y
 apt-get install -y apache2 php php-mysqli php-gd mariadb-server
 
 systemctl enable --now mariadb
 mysql -e "CREATE DATABASE IF NOT EXISTS dvwa;"
-mysql -e "CREATE USER IF NOT EXISTS 'dvwa'@'localhost' IDENTIFIED BY 'p@ssw0rd';"
-mysql -e "GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwa'@'localhost';"
-mysql -e "FLUSH PRIVILEGES;"
+dvwa_db_password="$(openssl rand -hex 32)"
+mysql <<SQL
+CREATE USER IF NOT EXISTS 'dvwa'@'localhost' IDENTIFIED BY '${dvwa_db_password}';
+ALTER USER 'dvwa'@'localhost' IDENTIFIED BY '${dvwa_db_password}';
+GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwa'@'localhost';
+FLUSH PRIVILEGES;
+SQL
 
 if [ ! -d /var/www/html/DVWA ]; then
   git clone https://github.com/digininja/DVWA.git /var/www/html/DVWA
 fi
 
 cp /var/www/html/DVWA/config/config.inc.php.dist /var/www/html/DVWA/config/config.inc.php
-sed -i "s/\$_DVWA\[ 'db_password' \] = '';/\$_DVWA[ 'db_password' ] = 'p@ssw0rd';/" /var/www/html/DVWA/config/config.inc.php
+sed -i "s/\$_DVWA\[ 'db_password' \] = '';/\$_DVWA[ 'db_password' ] = '${dvwa_db_password}';/" /var/www/html/DVWA/config/config.inc.php
+unset dvwa_db_password
 
 chown -R www-data:www-data /var/www/html/DVWA
 chmod -R 755 /var/www/html/DVWA/hackable/uploads
 systemctl enable --now apache2
 systemctl restart apache2
 
-# --- Vuln 4: anonymous Samba share ---
+# --- Vuln 3: anonymous Samba share ---
 apt-get install -y samba
 mkdir -p /srv/samba/public
 chmod 777 /srv/samba/public

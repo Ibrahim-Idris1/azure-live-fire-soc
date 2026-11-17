@@ -36,11 +36,11 @@ These four investigated alert types produced actionable findings during the revi
 - Date: 2026-10-17 14:23:03 UTC (investigated 2026-10-23)
 - Endpoint: `vm-linux-01`
 - Technique: SSH password guessing followed by a successful SSH authentication
-- Source: `102.217.8.26` (not recognized by the analyst or team)
+- Source: redacted in this public copy; not recognized by the analyst or team
 - Account: `socadmin`
 - Detection: DET-001, SSH Brute Force Attempt
-- Outcome: Successful password authentication was confirmed. The identity of the operator and post-login impact remain unverified.
-- Status: **Confirmed unauthorized successful authentication; potential compromise under investigation.**
+- Outcome: Successful password authentication was confirmed. The project owner reports the host was isolated and rebuilt and credentials/SSH keys were rotated; the operator's identity and post-login impact remain unverified.
+- Status: **Confirmed unauthorized successful authentication; reported containment actions completed; attribution and impact remain unverified.**
 - Hunt record: [SSH unauthorized login hunt](../hunts/2026-10-17-ssh-unauthorized-login-det001.md)
 
 ### INC-HUNT-RDP-2026-10-12 — RDP brute-force attempts

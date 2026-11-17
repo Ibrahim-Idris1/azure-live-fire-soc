@@ -22,7 +22,7 @@ Each hunt should record:
 ## Example Hunt Entries
 
 ### Hunt 01 — Brute force against SSH
-- Hypothesis: attackers may test weak credentials against Linux endpoints.
+- Hypothesis: attackers may attempt password guessing against SSH authentication.
 - Result: suspicious failed login bursts observed in syslog data.
 - Outcome: supported by existing SSH brute force detection rule.
 
